@@ -540,7 +540,6 @@ button { font-family: inherit; }
             <div style="font-size:13px;font-family:'DM Mono',monospace;color:${b.active&&b.inRange?'#f97316':'#333'};white-space:nowrap;flex-shrink:0;min-width:36px;text-align:right;">${due}</div>
             ${b.active?`
               <div data-stop="1" style="display:flex;align-items:center;gap:3px;flex-shrink:0;">
-                ${diff!==0?`<span style="font-size:9px;color:${diff>0?'#ef4444':'#10b981'};">${diff>0?'+':''}${diff.toFixed(0)}</span>`:''}
                 <span style="color:#7b7b7b;font-size:11px;">$</span>
                 <input type="number" min="0" data-act="planned" data-bill-id="${b.id}" data-focus-key="planned-${b.id}" value="${b.planned}" style="background:transparent;border:none;border-bottom:1px solid #2a2a2a;color:#e8e0d5;font-family:'DM Mono',monospace;font-size:16px;width:46px;text-align:right;padding:1px 0;outline:none;" />
               </div>
@@ -552,20 +551,34 @@ button { font-family: inherit; }
       </div>`;
   }
 
+  function toggleSwitch(on, act, id, onColor='#10b981'){
+    return `<div data-act="${act}" data-bill-id="${id}" style="display:inline-flex;align-items:center;cursor:pointer;">
+      <div style="width:32px;height:18px;border-radius:99px;background:${on?onColor:'#2a2a2a'};position:relative;transition:background .2s;flex-shrink:0;">
+        <div style="position:absolute;top:3px;left:${on?'15px':'3px'};width:12px;height:12px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.4);"></div>
+      </div>
+    </div>`;
+  }
+
   function expandedRowHtml(b,bw){
     const c=TC[b.type]||'#555';
     const items=[
       ['Category',`<span style="display:inline-block;padding:1px 7px;border-radius:99px;font-size:9px;background:${c}18;color:${c};border:1px solid ${c}30;">${b.type}</span>`],
-      ['Bank',escHtml(b.bank)||'—'],['Frequency',b.frequency],['Autopay',b.autopay?'Yes ✓':'No'],
-      ['Due Day',b.dueDay?`Day ${b.dueDay}`:'Variable'],[`Full Amount`,`$${(b.baseAmount||0).toLocaleString()}`],
-      ['Biweekly Split',`$${bw.toFixed(2)}`],['Status',b.active?'Active':'Inactive'],
+      ['Bank',escHtml(b.bank)||'—'],
+      ['Frequency',b.frequency],
+      ['Autopay',b.autopay?'Yes ✓':'No'],
+      ['Due Day',b.dueDay?`Day ${b.dueDay}`:'Variable'],
+      ['Full Amount',`$${(b.baseAmount||0).toLocaleString()}`],
+      ['Biweekly Split',`$${bw.toFixed(2)}`],
+      ['Status',`<span style="color:${b.active?'#10b981':'#555'};">${b.active?'Active':'Inactive'}</span>`],
     ];
     return `<div style="border-top:1px solid #1a1a1a;padding:10px 14px 12px;background:#0d0d0d;display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;">
-      ${items.map(([l,v])=>`<div><div style="font-size:9px;color:#7b7b7b;letter-spacing:.08em;margin-bottom:2px;">${l.toUpperCase()}</div><div style="font-size:11px;color:#aaa;">${v}</div></div>`).join('')}
-      <div style="grid-column:1/-1;margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;">
-        <button data-act="edit-bill" data-bill-id="${b.id}" style="background:transparent;border:1px solid #2a2a2a;color:#e8e0d5;padding:4px 12px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;">Edit</button>
-        <button data-act="toggle-paid" data-bill-id="${b.id}" style="background:${b.paid?'#10b98118':'transparent'};border:1px solid ${b.paid?'#10b98155':'#2a2a2a'};color:${b.paid?'#10b981':'#7b7b7b'};padding:4px 12px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;">${b.paid?'✓ Paid · Undo':'Mark as Paid'}</button>
+      ${items.map(([l,v])=>`<div><div style="font-size:9px;color:#7b7b7b;letter-spacing:.08em;margin-bottom:4px;">${l.toUpperCase()}</div><div style="font-size:11px;color:#aaa;">${v}</div></div>`).join('')}
+      <div style="grid-column:1/-1;margin-top:8px;display:flex;gap:6px;align-items:center;">
+        <button data-act="edit-bill" data-bill-id="${b.id}" title="Edit" style="background:transparent;border:1px solid #2a2a2a;color:#e8e0d5;width:28px;height:28px;border-radius:4px;font-size:12px;font-family:'DM Mono',monospace;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8.5 1.5a1.414 1.414 0 0 1 2 2L4 10H2v-2L8.5 1.5z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
         <button data-act="toggle-pin" data-bill-id="${b.id}" style="background:${b.pinned?'#f9731618':'transparent'};border:1px solid ${b.pinned?'#f9731655':'#2a2a2a'};color:${b.pinned?'#f97316':'#7b7b7b'};padding:4px 12px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;">${b.pinned?'📌 Unpin':'📌 Pin'}</button>
+        <div style="flex:1;"></div>
         <button data-act="toggle-active" data-bill-id="${b.id}" style="background:transparent;border:1px solid ${b.active?'#ef444455':'#10b98155'};color:${b.active?'#ef4444':'#10b981'};padding:4px 12px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;">${b.active?'Deactivate':'Activate'}</button>
       </div>
     </div>`;
@@ -593,9 +606,15 @@ button { font-family: inherit; }
           ${field('DUE DAY (1–31)',`<input type="number" min="1" max="31" data-act="ef-dueday" data-focus-key="ef-dueday" value="${eb.dueDay==null?'':eb.dueDay}" placeholder="—" class="ef" />`)}
           ${field('PLANNED (per check)',`<input type="number" min="0" step="0.01" data-act="ef-planned" data-focus-key="ef-planned" value="${eb.planned}" class="ef" />`)}
         </div>
-        <div style="display:flex;gap:14px;margin-top:4px;margin-bottom:6px;">
-          <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:#aaa;cursor:pointer;user-select:none;"><input type="checkbox" data-act="ef-autopay" ${eb.autopay?'checked':''} style="cursor:pointer;" /> Autopay</label>
-          <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:#aaa;cursor:pointer;user-select:none;"><input type="checkbox" data-act="ef-active" ${eb.active?'checked':''} style="cursor:pointer;" /> Active</label>
+        <div style="display:flex;gap:16px;margin-top:8px;margin-bottom:6px;flex-wrap:wrap;">
+          <div data-act="ef-autopay-toggle" style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;">
+            ${toggleSwitch(eb.autopay,'ef-autopay-toggle',null,'#10b981')}
+            <span style="font-size:11px;color:${eb.autopay?'#e8e0d5':'#7b7b7b'};">Autopay</span>
+          </div>
+          <div data-act="ef-active-toggle" style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;">
+            ${toggleSwitch(eb.active,'ef-active-toggle',null,'#10b981')}
+            <span style="font-size:11px;color:${eb.active?'#10b981':'#7b7b7b'};">Active</span>
+          </div>
           <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:${eb.pinned?'#f97316':'#aaa'};cursor:pointer;user-select:none;"><input type="checkbox" data-act="ef-pinned" ${eb.pinned?'checked':''} style="cursor:pointer;" /> 📌 Pin to Top</label>
         </div>
         ${state.confirmingDelete?`<div style="margin-top:10px;padding:8px 10px;border:1px solid #ef444455;background:#ef44441a;border-radius:4px;font-size:10px;color:#ef4444;letter-spacing:.05em;">This will permanently remove the bill. Tap <b>DELETE</b> again to confirm.</div>`:''}
@@ -912,7 +931,8 @@ button { font-family: inherit; }
       }
       else if(act==='expand-row') el.onclick=e=>{ if(e.target&&e.target.closest&&e.target.closest('[data-stop="1"]')) return; state.expandedIds.has(id)?state.expandedIds.delete(id):state.expandedIds.add(id); render(); };
       else if(act==='toggle-paid') el.onclick=()=>{ const b=state.bills.find(b=>b.id===id); if(b){b.paid=!b.paid;render();} };
-      else if(act==='toggle-active') el.onclick=()=>{ const b=state.bills.find(b=>b.id===id); if(b){b.active=!b.active;render();} };
+      else if(act==='toggle-autopay') el.onclick=e=>{ e.stopPropagation(); const b=state.bills.find(b=>b.id===id); if(b){b.autopay=!b.autopay;render();} };
+      else if(act==='toggle-active') el.onclick=e=>{ e.stopPropagation(); const b=state.bills.find(b=>b.id===id); if(b){b.active=!b.active;render();} };
       else if(act==='toggle-pin') el.onclick=()=>{ const b=state.bills.find(b=>b.id===id); if(b){b.pinned=!b.pinned;render();} };
       else if(act==='new-bill') el.onclick=()=>startNewBill();
       else if(act==='edit-bill') el.onclick=()=>startEditBill(id);
@@ -928,7 +948,9 @@ button { font-family: inherit; }
       else if(act==='ef-planned') el.onchange=e=>updEditField('planned',e.target.value===''?0:Number(e.target.value));
       else if(act==='ef-dueday') el.onchange=e=>updEditField('dueDay',e.target.value===''?null:Number(e.target.value));
       else if(act==='ef-autopay') el.onchange=e=>updEditField('autopay',e.target.checked);
+      else if(act==='ef-autopay-toggle') el.onclick=()=>updEditField('autopay',!state.editingBill.autopay);
       else if(act==='ef-active') el.onchange=e=>updEditField('active',e.target.checked);
+      else if(act==='ef-active-toggle') el.onclick=()=>updEditField('active',!state.editingBill.active);
       else if(act==='ef-pinned') el.onchange=e=>updEditField('pinned',e.target.checked);
     });
     document.querySelectorAll('[data-stop="1"]').forEach(el=>{ el.onclick=e=>e.stopPropagation(); el.onmousedown=e=>e.stopPropagation(); el.onpointerdown=e=>e.stopPropagation(); });
@@ -942,7 +964,7 @@ button { font-family: inherit; }
       const bdLeft=row.querySelector('[data-backdrop-left="1"]');
       let sX=null,sY=null,dx=0,dy=0,didSwipe=false,locked=null;
       row.onpointerdown=e=>{ const t=e.target; if(!t) return; if(t.closest&&(t.closest('[data-stop="1"]')||t.closest('input,select,button'))) return; sX=e.clientX;sY=e.clientY;dx=0;dy=0;didSwipe=false;locked=null; content.style.transition='none'; if(backdrop) backdrop.style.transition='none'; if(bdLeft) bdLeft.style.transition='none'; try{row.setPointerCapture(e.pointerId);}catch(_){} };
-      row.onpointermove=e=>{ if(sX==null) return; dx=e.clientX-sX;dy=e.clientY-sY; if(locked==null){ if(Math.abs(dx)>8||Math.abs(dy)>8) locked=Math.abs(dx)>Math.abs(dy)?'h':'v'; else return; } if(locked==='v') return; if(Math.abs(dx)>4) didSwipe=true;
+      row.onpointermove=e=>{ if(sX==null) return; dx=e.clientX-sX;dy=e.clientY-sY; if(locked==null){ if(Math.abs(dx)>8||Math.abs(dy)>8) locked=Math.abs(dx)>Math.abs(dy)?'h':'v'; else return; } if(locked==='v') return; if(Math.abs(dx)>16) didSwipe=true;
         if(dx>0){ content.style.transform=`translateX(${Math.max(0,dx)}px)`; if(backdrop){backdrop.style.opacity=Math.min(1,dx/SWIPE_THRESHOLD).toFixed(2);backdrop.style.fontWeight=dx>=SWIPE_THRESHOLD?'700':'500';} if(bdLeft) bdLeft.style.opacity='0'; }
         else{ content.style.transform=`translateX(-${Math.max(0,-dx)}px)`; if(bdLeft){bdLeft.style.opacity=Math.min(1,-dx/SWIPE_THRESHOLD).toFixed(2);bdLeft.style.fontWeight=-dx>=SWIPE_THRESHOLD?'700':'500';} if(backdrop) backdrop.style.opacity='0'; }
       };

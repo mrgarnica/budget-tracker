@@ -216,6 +216,55 @@ button { font-family: inherit; }
     });
   }
   function escHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function getBillEmoji(name){
+    const n=(name||'').toLowerCase();
+    if(n.includes('mortgage'))           return '🏠';
+    if(n.includes('baby sit'))           return '👶';
+    if(n.includes('haircut'))            return '✂️';
+    if(n.includes('car wash'))           return '🧼';
+    if(n.includes('car payment')||n.includes('m3 car')||n.includes('my car')) return '🚗';
+    if(n.includes('school loan')||n.includes('student')) return '🎓';
+    if(n.includes('sofi'))               return '💸';
+    if(n.includes('jefe'))               return '🤝';
+    if(n.includes('tesla insurance'))    return '🛡️';
+    if(n.includes('tesla premium'))      return '⚡';
+    if(n.includes('iphone'))             return '📱';
+    if(n.includes('icloud'))             return '☁️';
+    if(n.includes('apple one'))          return '🍎';
+    if(n.includes('apple wallet'))       return '💳';
+    if(n.includes('apple'))              return '🍎';
+    if(n.includes('netflix'))            return '🎬';
+    if(n.includes('hulu'))               return '📺';
+    if(n.includes('spotify'))            return '🎵';
+    if(n.includes('amazon prime'))       return '📦';
+    if(n.includes('amazon'))             return '📦';
+    if(n.includes('google'))             return '☁️';
+    if(n.includes('figma'))              return '🎨';
+    if(n.includes('diagram'))            return '📊';
+    if(n.includes('ufc'))                return '🥊';
+    if(n.includes('vanguard'))           return '📈';
+    if(n.includes('robinhood'))          return '🏹';
+    if(n.includes('m1'))                 return '📊';
+    if(n.includes('t-mobile')||n.includes('tmobile')) return '📱';
+    if(n.includes('at&t'))               return '📱';
+    if(n.includes('scenbird'))           return '🌿';
+    if(n.includes('electricity'))        return '⚡';
+    if(n.includes('socalgas')||n.includes('gas')) return '🔥';
+    if(n.includes('water'))              return '💧';
+    if(n.includes('aaa'))                return '🚘';
+    if(n.includes('target'))             return '🎯';
+    if(n.includes('sam\'s')||n.includes('sams')) return '🛒';
+    if(n.includes('walmart'))            return '🛒';
+    if(n.includes('wayfair'))            return '🛋️';
+    if(n.includes('best buy'))           return '🖥️';
+    if(n.includes('tj max')||n.includes('tjmax')) return '🛍️';
+    if(n.includes('paypal'))             return '💸';
+    if(n.includes('discovery'))          return '📺';
+    if(n.includes('scf')||n.includes('sfcu')||n.includes('loan')) return '🏦';
+    if(n.includes('insurance'))          return '🛡️';
+    if(n.includes('rapid'))              return '🧼';
+    return '💳';
+  }
   function escAttr(s){ return escHtml(s); }
 
   /* ── App-level state ───────────────────────────────────────── */
@@ -736,7 +785,7 @@ button { font-family: inherit; }
               <div style="display:flex;align-items:center;gap:5px;">
                 ${b.pinned?`<span style="font-size:9px;color:#f97316;flex-shrink:0;">📌</span>`:''}
                 ${b.paid?`<span style="font-size:10px;color:#10b981;flex-shrink:0;">✓</span>`:''}
-                <div title="${escAttr(b.name)}" style="font-size:15px;color:${b.paid?'#10b98199':effActive?'#e0d8ce':'#666'};font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${b.paid?'text-decoration:line-through;text-decoration-color:#10b98166;':''}">${escHtml(b.name)}</div>
+                <div title="${escAttr(b.name)}" style="font-size:15px;color:${b.paid?'#10b98199':effActive?'#e0d8ce':'#666'};font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${b.paid?'text-decoration:line-through;text-decoration-color:#10b98166;':''}">${getBillEmoji(b.name)} ${escHtml(b.name)}</div>
               </div>
               <div style="font-size:11px;color:#7b7b7b;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(b.bank)}${b.autopay?' · AUTO':''}</div>
             </div>

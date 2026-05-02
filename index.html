@@ -127,62 +127,62 @@ button { font-family: inherit; }
   /* ── Initial bill template ─────────────────────────────────── */
   const INITIAL_BILLS = [
     // ── Bi-weekly (baseAmount = CSV amount × 2; per-check = baseAmount/2) ──
-    {id:1, name:"MY Car Payment",        type:"Loan",         bank:"Schools First", baseAmount:972,  frequency:"bi-weekly", autopay:true,  dueDay:null, active:true,  pinned:true},
-    {id:2, name:"Apple Wallet",          type:"CC",           bank:"Apple",         baseAmount:800,  frequency:"bi-weekly", autopay:false, dueDay:null, active:true,  pinned:true},
-    {id:3, name:"SoFi Loan 21k",         type:"Loan",         bank:"Schools First", baseAmount:500,  frequency:"bi-weekly", autopay:true,  dueDay:null, active:true,  pinned:true},
-    {id:4, name:"Vanguard",              type:"Investment",   bank:"Schools First", baseAmount:100,  frequency:"bi-weekly", autopay:true,  dueDay:null, active:true,  pinned:true},
-    {id:5, name:"Mortgage",              type:"Loan",         bank:"Chase",         baseAmount:3300, frequency:"bi-weekly", autopay:false, dueDay:null, active:true,  pinned:true},
-    {id:6, name:"Haircut",               type:"Bills",        bank:"Schools First", baseAmount:30,   frequency:"bi-weekly", autopay:false, dueDay:null, active:true,  pinned:true},
-    {id:7, name:"Baby Sitting",          type:"Bills",        bank:"Schools First", baseAmount:0,    frequency:"bi-weekly", autopay:false, dueDay:null, active:true,  pinned:true},
-    {id:8, name:"Robinhood",             type:"Investment",   bank:"Schools First", baseAmount:100,  frequency:"bi-weekly", autopay:true,  dueDay:null, active:true,  pinned:true},
-    {id:9, name:"M1",                    type:"Bills",        bank:"M1",            baseAmount:0,    frequency:"bi-weekly", autopay:false, dueDay:null, active:false, pinned:false},
-    // ── Monthly (baseAmount = full monthly amount; No. = dueDay) ──────────
-    {id:10, name:"Sam's Club",           type:"CC",           bank:"Schools First", baseAmount:150,  frequency:"monthly",   autopay:false, dueDay:null, active:true,  pinned:true},
-    {id:11, name:"Amazon (Chase)",       type:"CC",           bank:"Chase",         baseAmount:100,  frequency:"monthly",   autopay:false, dueDay:null, active:true,  pinned:true},
-    {id:12, name:"Capital One X (9806)", type:"CC",           bank:"Capital One X", baseAmount:350,  frequency:"monthly",   autopay:true,  dueDay:null, active:true,  pinned:true},
-    {id:13, name:"Tesla Insurance M3",   type:"Bills",        bank:"Apple",         baseAmount:159,  frequency:"monthly",   autopay:true,  dueDay:1,    active:false},
-    {id:14, name:"Scenbird",             type:"Subscription", bank:"Apple",         baseAmount:29,   frequency:"monthly",   autopay:true,  dueDay:1,    active:false},
-    {id:15, name:"SFCU CC/Overdraft",    type:"CC",           bank:"Schools First", baseAmount:0,    frequency:"monthly",   autopay:false, dueDay:2,    active:true},
-    {id:16, name:"SCF 02 Loan 15k",      type:"Loan",         bank:"Schools First", baseAmount:380,  frequency:"monthly",   autopay:true,  dueDay:3,    active:true},
-    {id:17, name:"M3 Car Payment",       type:"Loan",         bank:"Schools First", baseAmount:350,  frequency:"monthly",   autopay:false, dueDay:3,    active:true},
-    {id:18, name:"Tesla Insurance MY",   type:"Bills",        bank:"Apple",         baseAmount:295,  frequency:"monthly",   autopay:true,  dueDay:4,    active:true},
-    {id:19, name:"School Loan",          type:"Loan",         bank:"Schools First", baseAmount:100,  frequency:"monthly",   autopay:true,  dueDay:4,    active:true},
-    {id:20, name:"SCF 04 Loan 10k",      type:"Loan",         bank:"Schools First", baseAmount:225,  frequency:"monthly",   autopay:true,  dueDay:5,    active:false},
-    {id:21, name:"Capital One (9826)",   type:"CC",           bank:"Capital One",   baseAmount:50,   frequency:"monthly",   autopay:true,  dueDay:6,    active:true},
-    {id:22, name:"UFC Monthly Fee",      type:"Subscription", bank:"Amex",          baseAmount:19,   frequency:"monthly",   autopay:true,  dueDay:6,    active:true},
-    {id:23, name:"Jefe's Loan",          type:"Loan",         bank:"Schools First", baseAmount:300,  frequency:"monthly",   autopay:false, dueDay:6,    active:true},
-    {id:24, name:"Discovery",            type:"Subscription", bank:"Chase",         baseAmount:0,    frequency:"monthly",   autopay:true,  dueDay:7,    active:false},
-    {id:25, name:"Amex (Wife's)",        type:"CC",           bank:"Amex",          baseAmount:120,  frequency:"monthly",   autopay:false, dueDay:8,    active:true},
-    {id:26, name:"Capital One (2731)",   type:"CC",           bank:"Capital One",   baseAmount:50,   frequency:"monthly",   autopay:false, dueDay:10,   active:true},
-    {id:27, name:"Water Bill",           type:"Bills",        bank:"Schools First", baseAmount:30,   frequency:"monthly",   autopay:true,  dueDay:10,   active:true},
-    {id:28, name:"Spotify",              type:"Subscription", bank:"PayPal",        baseAmount:16,   frequency:"monthly",   autopay:true,  dueDay:11,   active:false},
-    {id:29, name:"Netflix",              type:"Subscription", bank:"Capital One",   baseAmount:5,    frequency:"monthly",   autopay:true,  dueDay:11,   active:true},
-    {id:30, name:"TJ Max",               type:"CC",           bank:"Schools First", baseAmount:50,   frequency:"monthly",   autopay:false, dueDay:13,   active:false},
-    {id:31, name:"Discover (6275)",      type:"CC",           bank:"Schools First", baseAmount:200,  frequency:"monthly",   autopay:true,  dueDay:13,   active:false},
-    {id:32, name:"Target",               type:"CC",           bank:"Schools First", baseAmount:200,  frequency:"monthly",   autopay:false, dueDay:13,   active:true},
-    {id:33, name:"Walmart",              type:"CC",           bank:"Capital One",   baseAmount:0,    frequency:"monthly",   autopay:false, dueDay:16,   active:true},
-    {id:34, name:"Wayfair",              type:"Loan",         bank:"Schools First", baseAmount:50,   frequency:"monthly",   autopay:false, dueDay:16,   active:true},
-    {id:35, name:"Google Drive",         type:"Subscription", bank:"Amex",          baseAmount:10,   frequency:"monthly",   autopay:true,  dueDay:16,   active:true},
-    {id:36, name:"T-Mobile (Venture)",   type:"Bills",        bank:"Schools First", baseAmount:213,  frequency:"monthly",   autopay:true,  dueDay:17,   active:true},
-    {id:37, name:"AT&T",                 type:"Bills",        bank:"Schools First", baseAmount:66,   frequency:"monthly",   autopay:true,  dueDay:18,   active:true},
-    {id:38, name:"Best Buy",             type:"CC",           bank:"Schools First", baseAmount:50,   frequency:"monthly",   autopay:true,  dueDay:18,   active:false},
-    {id:39, name:"Citi 1863 Diamond",    type:"CC",           bank:"Schools First", baseAmount:200,  frequency:"monthly",   autopay:false, dueDay:18,   active:false},
-    {id:40, name:"Amex (mine)",          type:"CC",           bank:"Amex",          baseAmount:0,    frequency:"monthly",   autopay:false, dueDay:19,   active:false},
-    {id:41, name:"Paypal",               type:"CC",           bank:"Schools First", baseAmount:100,  frequency:"monthly",   autopay:false, dueDay:20,   active:true},
-    {id:42, name:"Hulu",                 type:"Subscription", bank:"Amex",          baseAmount:3,    frequency:"monthly",   autopay:true,  dueDay:21,   active:true},
-    {id:43, name:"Electricity",          type:"Bills",        bank:"Schools First", baseAmount:172,  frequency:"monthly",   autopay:true,  dueDay:23,   active:true},
-    {id:44, name:"Rapid Express Car Wash",type:"Subscription",bank:"Capital One X", baseAmount:34,   frequency:"monthly",   autopay:true,  dueDay:25,   active:true},
-    {id:45, name:"SoCalGas",             type:"Bills",        bank:"Schools First", baseAmount:30,   frequency:"monthly",   autopay:true,  dueDay:26,   active:true},
-    {id:46, name:"Apple iCloud",         type:"Subscription", bank:"Apple",         baseAmount:35,   frequency:"monthly",   autopay:true,  dueDay:27,   active:false},
-    {id:47, name:"Apple One Premier",    type:"Subscription", bank:"Apple",         baseAmount:38,   frequency:"monthly",   autopay:true,  dueDay:28,   active:true},
-    {id:48, name:"iPhones Payment",      type:"Bills",        bank:"Apple",         baseAmount:0,    frequency:"monthly",   autopay:true,  dueDay:30,   active:true},
-    {id:49, name:"Diagram",              type:"Subscription", bank:"Amex",          baseAmount:9,    frequency:"monthly",   autopay:true,  dueDay:31,   active:false},
-    // ── Yearly (all deactivated per rule 3) ───────────────────────────────
-    {id:50, name:"UFC Yearly Fee",       type:"Subscription", bank:"Amex",          baseAmount:59,   frequency:"yearly",    autopay:true,  dueDay:1,    active:false},
-    {id:51, name:"AAA",                  type:"Subscription", bank:"Amex",          baseAmount:139,  frequency:"yearly",    autopay:true,  dueDay:14,   active:false},
-    {id:52, name:"Figma",                type:"Subscription", bank:"Capital One",   baseAmount:144,  frequency:"yearly",    autopay:true,  dueDay:19,   active:false},
-    {id:53, name:"Amazon Prime",         type:"Subscription", bank:"Chase",         baseAmount:139,  frequency:"yearly",    autopay:true,  dueDay:23,   active:false},
-    {id:54, name:"Tesla Premium",        type:"Subscription", bank:"Amex",          baseAmount:99,   frequency:"yearly",    autopay:true,  dueDay:31,   active:false},
+    {id:1,  name:"🚗 MY Car Payment",        type:"Loan",         bank:"Schools First", baseAmount:972,  frequency:"bi-weekly", autopay:true,  dueDay:null, active:true,  pinned:true},
+    {id:2,  name:"💳 Apple Wallet",          type:"CC",           bank:"Apple",         baseAmount:800,  frequency:"bi-weekly", autopay:false, dueDay:null, active:true,  pinned:true},
+    {id:3,  name:"💸 SoFi Loan 21k",         type:"Loan",         bank:"Schools First", baseAmount:500,  frequency:"bi-weekly", autopay:true,  dueDay:null, active:true,  pinned:true},
+    {id:4,  name:"📈 Vanguard",              type:"Investment",   bank:"Schools First", baseAmount:100,  frequency:"bi-weekly", autopay:true,  dueDay:null, active:true,  pinned:true},
+    {id:5,  name:"🏠 Mortgage",              type:"Loan",         bank:"Chase",         baseAmount:3300, frequency:"bi-weekly", autopay:false, dueDay:null, active:true,  pinned:true},
+    {id:6,  name:"✂️ Haircut",               type:"Bills",        bank:"Schools First", baseAmount:30,   frequency:"bi-weekly", autopay:false, dueDay:null, active:true,  pinned:true},
+    {id:7,  name:"👶 Baby Sitting",          type:"Bills",        bank:"Schools First", baseAmount:0,    frequency:"bi-weekly", autopay:false, dueDay:null, active:true,  pinned:true},
+    {id:8,  name:"🏹 Robinhood",             type:"Investment",   bank:"Schools First", baseAmount:100,  frequency:"bi-weekly", autopay:true,  dueDay:null, active:true,  pinned:true},
+    {id:9,  name:"📊 M1",                    type:"Bills",        bank:"M1",            baseAmount:0,    frequency:"bi-weekly", autopay:false, dueDay:null, active:false, pinned:false},
+    // ── Monthly ───────────────────────────────────────────────────────────
+    {id:10, name:"🛒 Sam's Club",           type:"CC",           bank:"Schools First", baseAmount:150,  frequency:"monthly",   autopay:false, dueDay:null, active:true,  pinned:true},
+    {id:11, name:"📦 Amazon (Chase)",       type:"CC",           bank:"Chase",         baseAmount:100,  frequency:"monthly",   autopay:false, dueDay:null, active:true,  pinned:true},
+    {id:12, name:"💳 Capital One X (9806)", type:"CC",           bank:"Capital One X", baseAmount:350,  frequency:"monthly",   autopay:true,  dueDay:null, active:true,  pinned:true},
+    {id:13, name:"🛡️ Tesla Insurance M3",   type:"Bills",        bank:"Apple",         baseAmount:159,  frequency:"monthly",   autopay:true,  dueDay:1,    active:false},
+    {id:14, name:"🌿 Scenbird",             type:"Subscription", bank:"Apple",         baseAmount:29,   frequency:"monthly",   autopay:true,  dueDay:1,    active:false},
+    {id:15, name:"🏦 SFCU CC/Overdraft",    type:"CC",           bank:"Schools First", baseAmount:0,    frequency:"monthly",   autopay:false, dueDay:2,    active:true},
+    {id:16, name:"🏦 SCF 02 Loan 15k",      type:"Loan",         bank:"Schools First", baseAmount:380,  frequency:"monthly",   autopay:true,  dueDay:3,    active:true},
+    {id:17, name:"🚗 M3 Car Payment",       type:"Loan",         bank:"Schools First", baseAmount:350,  frequency:"monthly",   autopay:false, dueDay:3,    active:true},
+    {id:18, name:"🛡️ Tesla Insurance MY",   type:"Bills",        bank:"Apple",         baseAmount:295,  frequency:"monthly",   autopay:true,  dueDay:4,    active:true},
+    {id:19, name:"🎓 School Loan",          type:"Loan",         bank:"Schools First", baseAmount:100,  frequency:"monthly",   autopay:true,  dueDay:4,    active:true},
+    {id:20, name:"🏦 SCF 04 Loan 10k",      type:"Loan",         bank:"Schools First", baseAmount:225,  frequency:"monthly",   autopay:true,  dueDay:5,    active:false},
+    {id:21, name:"💳 Capital One (9826)",   type:"CC",           bank:"Capital One",   baseAmount:50,   frequency:"monthly",   autopay:true,  dueDay:6,    active:true},
+    {id:22, name:"🥊 UFC Monthly Fee",      type:"Subscription", bank:"Amex",          baseAmount:19,   frequency:"monthly",   autopay:true,  dueDay:6,    active:true},
+    {id:23, name:"🤝 Jefe's Loan",          type:"Loan",         bank:"Schools First", baseAmount:300,  frequency:"monthly",   autopay:false, dueDay:6,    active:true},
+    {id:24, name:"📺 Discovery",            type:"Subscription", bank:"Chase",         baseAmount:0,    frequency:"monthly",   autopay:true,  dueDay:7,    active:false},
+    {id:25, name:"💳 Amex (Wife's)",        type:"CC",           bank:"Amex",          baseAmount:120,  frequency:"monthly",   autopay:false, dueDay:8,    active:true},
+    {id:26, name:"💳 Capital One (2731)",   type:"CC",           bank:"Capital One",   baseAmount:50,   frequency:"monthly",   autopay:false, dueDay:10,   active:true},
+    {id:27, name:"💧 Water Bill",           type:"Bills",        bank:"Schools First", baseAmount:30,   frequency:"monthly",   autopay:true,  dueDay:10,   active:true},
+    {id:28, name:"🎵 Spotify",              type:"Subscription", bank:"PayPal",        baseAmount:16,   frequency:"monthly",   autopay:true,  dueDay:11,   active:false},
+    {id:29, name:"🎬 Netflix",              type:"Subscription", bank:"Capital One",   baseAmount:5,    frequency:"monthly",   autopay:true,  dueDay:11,   active:true},
+    {id:30, name:"🛍️ TJ Max",               type:"CC",           bank:"Schools First", baseAmount:50,   frequency:"monthly",   autopay:false, dueDay:13,   active:false},
+    {id:31, name:"💳 Discover (6275)",      type:"CC",           bank:"Schools First", baseAmount:200,  frequency:"monthly",   autopay:true,  dueDay:13,   active:false},
+    {id:32, name:"🎯 Target",               type:"CC",           bank:"Schools First", baseAmount:200,  frequency:"monthly",   autopay:false, dueDay:13,   active:true},
+    {id:33, name:"🛒 Walmart",              type:"CC",           bank:"Capital One",   baseAmount:0,    frequency:"monthly",   autopay:false, dueDay:16,   active:true},
+    {id:34, name:"🛋️ Wayfair",              type:"Loan",         bank:"Schools First", baseAmount:50,   frequency:"monthly",   autopay:false, dueDay:16,   active:true},
+    {id:35, name:"☁️ Google Drive",         type:"Subscription", bank:"Amex",          baseAmount:10,   frequency:"monthly",   autopay:true,  dueDay:16,   active:true},
+    {id:36, name:"📱 T-Mobile (Venture)",   type:"Bills",        bank:"Schools First", baseAmount:213,  frequency:"monthly",   autopay:true,  dueDay:17,   active:true},
+    {id:37, name:"📱 AT&T",                 type:"Bills",        bank:"Schools First", baseAmount:66,   frequency:"monthly",   autopay:true,  dueDay:18,   active:true},
+    {id:38, name:"🖥️ Best Buy",             type:"CC",           bank:"Schools First", baseAmount:50,   frequency:"monthly",   autopay:true,  dueDay:18,   active:false},
+    {id:39, name:"💳 Citi 1863 Diamond",    type:"CC",           bank:"Schools First", baseAmount:200,  frequency:"monthly",   autopay:false, dueDay:18,   active:false},
+    {id:40, name:"💳 Amex (mine)",          type:"CC",           bank:"Amex",          baseAmount:0,    frequency:"monthly",   autopay:false, dueDay:19,   active:false},
+    {id:41, name:"💸 Paypal",               type:"CC",           bank:"Schools First", baseAmount:100,  frequency:"monthly",   autopay:false, dueDay:20,   active:true},
+    {id:42, name:"📺 Hulu",                 type:"Subscription", bank:"Amex",          baseAmount:3,    frequency:"monthly",   autopay:true,  dueDay:21,   active:true},
+    {id:43, name:"⚡ Electricity",          type:"Bills",        bank:"Schools First", baseAmount:172,  frequency:"monthly",   autopay:true,  dueDay:23,   active:true},
+    {id:44, name:"🧼 Rapid Express Car Wash",type:"Subscription",bank:"Capital One X", baseAmount:34,   frequency:"monthly",   autopay:true,  dueDay:25,   active:true},
+    {id:45, name:"🔥 SoCalGas",             type:"Bills",        bank:"Schools First", baseAmount:30,   frequency:"monthly",   autopay:true,  dueDay:26,   active:true},
+    {id:46, name:"☁️ Apple iCloud",         type:"Subscription", bank:"Apple",         baseAmount:35,   frequency:"monthly",   autopay:true,  dueDay:27,   active:false},
+    {id:47, name:"🍎 Apple One Premier",    type:"Subscription", bank:"Apple",         baseAmount:38,   frequency:"monthly",   autopay:true,  dueDay:28,   active:true},
+    {id:48, name:"📱 iPhones Payment",      type:"Bills",        bank:"Apple",         baseAmount:0,    frequency:"monthly",   autopay:true,  dueDay:30,   active:true},
+    {id:49, name:"📊 Diagram",              type:"Subscription", bank:"Amex",          baseAmount:9,    frequency:"monthly",   autopay:true,  dueDay:31,   active:false},
+    // ── Yearly → archived by default ──────────────────────────────────────
+    {id:50, name:"🥊 UFC Yearly Fee",       type:"Subscription", bank:"Amex",          baseAmount:59,   frequency:"yearly",    autopay:true,  dueDay:1,    active:false, archived:true},
+    {id:51, name:"🚘 AAA",                  type:"Subscription", bank:"Amex",          baseAmount:139,  frequency:"yearly",    autopay:true,  dueDay:14,   active:false, archived:true},
+    {id:52, name:"🎨 Figma",                type:"Subscription", bank:"Capital One",   baseAmount:144,  frequency:"yearly",    autopay:true,  dueDay:19,   active:false, archived:true},
+    {id:53, name:"📦 Amazon Prime",         type:"Subscription", bank:"Chase",         baseAmount:139,  frequency:"yearly",    autopay:true,  dueDay:23,   active:false, archived:true},
+    {id:54, name:"⚡ Tesla Premium",        type:"Subscription", bank:"Amex",          baseAmount:99,   frequency:"yearly",    autopay:true,  dueDay:31,   active:false, archived:true},
   ];
 
   /* ── Constants ─────────────────────────────────────────────── */
@@ -195,7 +195,7 @@ button { font-family: inherit; }
   function bwAmt(b){ if(b.frequency==="bi-weekly") return (Number(b.baseAmount)||0)/2; if(b.frequency==="monthly") return (Number(b.baseAmount)||0)/2; return (Number(b.baseAmount)||0)/26; }
   // manualActive: null=auto, true=force-show, false=force-hide
   // auto: show if no due day (bi-weekly) or due date falls in current range
-  function isEffectivelyActive(b){ if(b.manualActive===false) return false; if(b.manualActive===true) return true; return !b.dueDay||!!b.inRange; }
+  function isEffectivelyActive(b){ if(b.archived) return false; if(b.manualActive===false) return false; if(b.manualActive===true) return true; return !b.dueDay||!!b.inRange; }
   function toDS(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
   function addD(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
   function shiftDateString(s,days){ return toDS(addD(new Date(s+"T00:00:00"),days)); }
@@ -294,8 +294,8 @@ button { font-family: inherit; }
 
     // Copy bills from last check (reset paid/pinned), or use INITIAL_BILLS
     const bills = last
-      ? last.bills.map(b => Object.assign({}, b, { paid: false, manualActive: b.manualActive===false?false:null }))
-      : INITIAL_BILLS.map(b => Object.assign({}, b, { planned: Math.round(bwAmt(b)*100)/100, paid: false, manualActive: b.active===false?false:null }));
+      ? last.bills.map(b => Object.assign({}, b, { paid: false, manualActive: b.archived ? null : (b.manualActive===false?false:null) }))
+      : INITIAL_BILLS.map(b => Object.assign({}, b, { planned: Math.round(bwAmt(b)*100)/100, paid: false, archived: !!b.archived, manualActive: null }));
 
     // Advance dates: start day after last check ends, span 14 days
     const sd = last ? shiftDateString(last.ed, 1) : toDS(today);
@@ -347,6 +347,9 @@ button { font-family: inherit; }
     } catch(e) { console.warn('Load failed', e); }
     // First run — create a default check
     if (app.checks.length === 0) app.checks = [makeCheck()];
+    // Migration: archive yearly bills that haven't been migrated
+    const archivedIds = new Set(INITIAL_BILLS.filter(b=>b.archived).map(b=>b.id));
+    app.checks.forEach(chk=>{ chk.bills.forEach(b=>{ if(b.archived===undefined && archivedIds.has(b.id)) b.archived=true; }); });
     // Migration: apply default pins by name (IDs may differ in old saved data)
     const defaultPinnedNames = new Set(INITIAL_BILLS.filter(b=>b.pinned).map(b=>b.name.toLowerCase().trim()));
     // Migration: convert active field to manualActive
@@ -587,8 +590,11 @@ button { font-family: inherit; }
   /* ── Home screen ───────────────────────────────────────────── */
   function checkSummary(chk) {
     const totalIncome = (chk.incomeSources||[]).reduce((s,src)=>s+(Number(src.amount)||0),0);
-    // For home screen summary, count bills not explicitly force-hidden
-    const active = chk.bills.filter(b=>b.manualActive!==false);
+    // Use same date-range logic as detail view so numbers match
+    const start = new Date((chk.sd||toDS(new Date()))+'T00:00:00');
+    const end   = new Date((chk.ed||toDS(addD(new Date(),13)))+'T23:59:59');
+    const enriched = enrich(chk.bills, start, end);
+    const active = enriched.filter(b=>isEffectivelyActive(b));
     const totalAllocated = active.reduce((s,b)=>s+Number(b.planned||0),0);
     const remaining = totalIncome - totalAllocated;
     const paidCount = active.filter(b=>b.paid).length;
@@ -780,7 +786,7 @@ button { font-family: inherit; }
               <div style="display:flex;align-items:center;gap:5px;">
                 ${b.pinned?`<span style="font-size:9px;color:#f97316;flex-shrink:0;">📌</span>`:''}
                 ${b.paid?`<span style="font-size:10px;color:#10b981;flex-shrink:0;">✓</span>`:''}
-                <div title="${escAttr(b.name)}" style="font-size:15px;color:${b.paid?'#10b98199':effActive?'#e0d8ce':'#666'};font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${b.paid?'text-decoration:line-through;text-decoration-color:#10b98166;':''}">${getBillEmoji(b.name)} ${escHtml(b.name)}</div>
+                <div title="${escAttr(b.name)}" style="font-size:15px;color:${b.paid?'#10b98199':effActive?'#e0d8ce':'#666'};font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${b.paid?'text-decoration:line-through;text-decoration-color:#10b98166;':''}">${escHtml(b.name)}</div>
               </div>
               <div style="font-size:11px;color:#7b7b7b;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(b.bank)}${b.autopay?' · AUTO':''}</div>
             </div>
@@ -830,7 +836,8 @@ button { font-family: inherit; }
         </button>
         <button data-act="toggle-pin" data-bill-id="${b.id}" style="background:${b.pinned?'#f9731618':'transparent'};border:1px solid ${b.pinned?'#f9731655':'#2a2a2a'};color:${b.pinned?'#f97316':'#7b7b7b'};padding:4px 12px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;">${b.pinned?'📌 Unpin':'📌 Pin'}</button>
         <div style="flex:1;"></div>
-        <button data-act="toggle-active" data-bill-id="${b.id}" data-eff-active="${isEffectivelyActive(b)?'1':'0'}" style="background:transparent;border:1px solid ${isEffectivelyActive(b)?'#ef444455':'#10b98155'};color:${isEffectivelyActive(b)?'#ef4444':'#10b981'};padding:4px 12px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;">${isEffectivelyActive(b)?'Deactivate':'Activate'}</button>
+        ${!b.archived?`<button data-act="toggle-active" data-bill-id="${b.id}" data-eff-active="${isEffectivelyActive(b)?'1':'0'}" style="background:transparent;border:1px solid ${isEffectivelyActive(b)?'#ef444455':'#10b98155'};color:${isEffectivelyActive(b)?'#ef4444':'#10b981'};padding:4px 12px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;">${isEffectivelyActive(b)?'Deactivate':'Activate'}</button>`:''}
+        <button data-act="toggle-archive" data-bill-id="${b.id}" style="background:transparent;border:1px solid #33333355;color:#555;padding:4px 12px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;">${b.archived?'🗄️ Unarchive':'🗄️ Archive'}</button>
       </div>
     </div>`;
   }
@@ -1004,12 +1011,13 @@ button { font-family: inherit; }
       if(state.paidFilter==='unpaid'&&b.paid) return false;
       return b.name.toLowerCase().includes(state.search.toLowerCase());
     };
-    const activeBills=enriched.filter(b=>isEffectivelyActive(b)&&matchesFilter(b)).sort((a,b)=>{
+    const activeBills=enriched.filter(b=>!b.archived&&isEffectivelyActive(b)&&matchesFilter(b)).sort((a,b)=>{
       if(b.pinned!==a.pinned) return(b.pinned?1:0)-(a.pinned?1:0);
       const ai=state.order.indexOf(a.id), bi=state.order.indexOf(b.id);
       if(ai===-1&&bi===-1) return 0; if(ai===-1) return 1; if(bi===-1) return -1; return ai-bi;
     });
-    const inactiveBills=enriched.filter(b=>!isEffectivelyActive(b)&&matchesFilter(b));
+    const inactiveBills=enriched.filter(b=>!b.archived&&!isEffectivelyActive(b)&&matchesFilter(b));
+    const archivedBills=enriched.filter(b=>!!b.archived&&matchesFilter(b));
     const allPaid = activeBills.length > 0 && activeBills.every(b=>b.paid);
     if (allPaid && !celebrationShown) { celebrationShown=true; setTimeout(triggerCelebration, 400); }
     else if (!allPaid) { celebrationShown=false; }
@@ -1022,8 +1030,7 @@ button { font-family: inherit; }
     const byType=Object.entries(byTypeMap).sort((a,b)=>b[1]-a[1]);
     const stats=[
       {l:"REMAINING",v:`$${Math.abs(remaining).toFixed(0)}`,s:isOver?"OVER":"available",c:sc},
-      {l:"ALLOCATED",v:`$${totalActive.toFixed(0)}`,s:"active bills",c:"#3b82f6"},
-      {l:"DUE IN RANGE",v:`$${totalInRange.toFixed(0)}`,s:`${inRangeCount} bills`,c:"#f97316"},
+      {l:"ALLOCATED",v:`$${totalActive.toFixed(0)}`,s:"active bills",c:"#f97316"},
       {l:"TAKE-HOME",v:`$${state.income.toLocaleString()}`,s:"per check · tap to edit",c:"#aaa",ed:true},
     ];
     const root=document.getElementById('root');
@@ -1079,7 +1086,7 @@ button { font-family: inherit; }
             </div>
             <div style="margin-top:8px;font-size:10px;color:#7b7b7b;"><span style="color:#f97316;">${inRangeCount}</span> bills due · <span style="color:#f97316;">$${totalInRange.toFixed(0)}</span> total in window</div>
           </div>
-          <div class="stat-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:12px;">
+          <div class="stat-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px;">
             ${stats.map(s=>`
               <div style="background:#111;border:1px solid #1e1e1e;border-radius:6px;padding:8px 10px;">
                 <div style="font-size:9px;color:#7b7b7b;letter-spacing:.1em;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.l}</div>
@@ -1126,6 +1133,15 @@ button { font-family: inherit; }
             ${inactiveBills.length===0?'<div style="padding:20px;text-align:center;color:#2a2a2a;font-size:11px;border:1px dashed #1a1a1a;border-radius:6px;">No inactive bills</div>':''}
             ${inactiveBills.map(b=>billRowHtml(b)).join('')}
           </div>
+          ${archivedBills.length>0?`
+          <div style="border:1px dashed #1a1a1a;border-radius:8px;padding:10px 10px 6px;background:#080808;margin-top:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding-left:4px;">
+              <div style="font-size:10px;color:#555;letter-spacing:.08em;">🗄️ ARCHIVED <span style="color:#333;margin-left:6px;">${archivedBills.length}</span></div>
+              <div style="font-size:9px;color:#333;">tap to unarchive</div>
+            </div>
+            ${archivedBills.map(b=>billRowHtml(b)).join('')}
+          </div>
+          `:''}
           <div style="font-size:9px;color:#7b7b7b;text-align:center;margin-top:12px;letter-spacing:.07em;">SWIPE RIGHT TO TOGGLE · SWIPE LEFT TO MARK PAID · TAP TO EXPAND</div>
         </div>
       </div>
@@ -1185,6 +1201,7 @@ button { font-family: inherit; }
       else if(act==='toggle-paid') el.onclick=()=>{ const b=state.bills.find(b=>b.id===id); if(b){b.paid=!b.paid;render();} };
       else if(act==='toggle-autopay') el.onclick=e=>{ e.stopPropagation(); const b=state.bills.find(b=>b.id===id); if(b){b.autopay=!b.autopay;render();} };
       else if(act==='toggle-active') el.onclick=e=>{ e.stopPropagation(); const b=state.bills.find(b=>b.id===id); if(b){ const wasActive=el.dataset.effActive==='1'; b.manualActive=wasActive?false:true; render(); } };
+      else if(act==='toggle-archive') el.onclick=e=>{ e.stopPropagation(); const b=state.bills.find(b=>b.id===id); if(b){ b.archived=!b.archived; if(!b.archived){ b.manualActive=false; } state.expandedIds.delete(id); render(); } };
       else if(act==='toggle-pin') el.onclick=()=>{ const b=state.bills.find(b=>b.id===id); if(b){b.pinned=!b.pinned;render();} };
       else if(act==='new-bill') el.onclick=()=>startNewBill();
       else if(act==='edit-bill') el.onclick=()=>startEditBill(id);

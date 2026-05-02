@@ -35,6 +35,9 @@ button { font-family: inherit; }
 @media (max-width: 480px) { .stat-grid { grid-template-columns: 1fr 1fr !important; } }
 @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-10px)} 40%{transform:translateX(10px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(6px)} }
 @keyframes pin-pop { from{transform:scale(0.6);opacity:0} to{transform:scale(1);opacity:1} }
+@keyframes confetti-fall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(105vh) rotate(720deg);opacity:0} }
+@keyframes banner-pop { 0%{transform:translate(-50%,-50%) scale(0.4);opacity:0} 60%{transform:translate(-50%,-50%) scale(1.08)} 100%{transform:translate(-50%,-50%) scale(1);opacity:1} }
+@keyframes banner-fade { 0%{opacity:1} 100%{opacity:0;transform:translate(-50%,-50%) scale(0.9)} }
 .check-card { background: #111; border: 1px solid #1e1e1e; border-radius: 8px; padding: 14px 16px; cursor: pointer; transition: border-color .15s, background .15s; }
 .check-card:hover { border-color: #2a2a2a; background: #141414; }
 </style>
@@ -123,45 +126,63 @@ button { font-family: inherit; }
 
   /* ── Initial bill template ─────────────────────────────────── */
   const INITIAL_BILLS = [
-    {id:1,name:"MY Car Payment",type:"Loan",bank:"Schools First",baseAmount:486,frequency:"bi-weekly",autopay:true,dueDay:1,active:true},
-    {id:2,name:"Apple Wallet",type:"CC",bank:"Apple",baseAmount:550,frequency:"bi-weekly",autopay:false,dueDay:1,active:true},
-    {id:3,name:"SoFi Loan 21k",type:"Loan",bank:"Schools First",baseAmount:250,frequency:"bi-weekly",autopay:true,dueDay:1,active:true},
-    {id:4,name:"Robinhood",type:"Investment",bank:"Schools First",baseAmount:50,frequency:"bi-weekly",autopay:true,dueDay:1,active:true},
-    {id:5,name:"Mortgage",type:"Loan",bank:"Chase",baseAmount:1700,frequency:"bi-weekly",autopay:false,dueDay:1,active:true},
-    {id:6,name:"Haircut",type:"Bills",bank:"Schools First",baseAmount:15,frequency:"bi-weekly",autopay:false,dueDay:null,active:true},
-    {id:7,name:"Baby Sitting",type:"Bills",bank:"Schools First",baseAmount:600,frequency:"bi-weekly",autopay:false,dueDay:null,active:true},
-    {id:8,name:"Vanguard",type:"Investment",bank:"Schools First",baseAmount:50,frequency:"bi-weekly",autopay:true,dueDay:1,active:true},
-    {id:9,name:"Amazon (Chase)",type:"CC",bank:"Chase",baseAmount:140,frequency:"monthly",autopay:false,dueDay:7,active:true},
-    {id:10,name:"Capital One X (9806)",type:"CC",bank:"Capital One X",baseAmount:550,frequency:"monthly",autopay:true,dueDay:25,active:true},
-    {id:11,name:"Sam's Club",type:"CC",bank:"Schools First",baseAmount:200,frequency:"monthly",autopay:false,dueDay:20,active:true},
-    {id:12,name:"SCF 02 Loan 15k",type:"Loan",bank:"Schools First",baseAmount:380,frequency:"monthly",autopay:true,dueDay:15,active:true},
-    {id:13,name:"M3 Car Payment",type:"Loan",bank:"Schools First",baseAmount:350,frequency:"monthly",autopay:false,dueDay:15,active:true},
-    {id:14,name:"School Loan",type:"Loan",bank:"Schools First",baseAmount:100,frequency:"monthly",autopay:true,dueDay:10,active:true},
-    {id:15,name:"Tesla Insurance MY",type:"Bills",bank:"Apple",baseAmount:295,frequency:"monthly",autopay:true,dueDay:5,active:true},
-    {id:16,name:"Capital One (9826)",type:"CC",bank:"Capital One",baseAmount:50,frequency:"monthly",autopay:true,dueDay:8,active:true},
-    {id:17,name:"UFC Monthly Fee",type:"Subscription",bank:"Amex",baseAmount:19,frequency:"monthly",autopay:true,dueDay:6,active:false},
-    {id:18,name:"Jefe's Loan",type:"Loan",bank:"Schools First",baseAmount:300,frequency:"monthly",autopay:false,dueDay:null,active:true},
-    {id:19,name:"Amex (Wife's)",type:"CC",bank:"Amex",baseAmount:100,frequency:"monthly",autopay:false,dueDay:28,active:true},
-    {id:20,name:"Water Bill",type:"Bills",bank:"Schools First",baseAmount:30,frequency:"monthly",autopay:true,dueDay:18,active:true},
-    {id:21,name:"Capital One (2731)",type:"CC",bank:"Capital One",baseAmount:50,frequency:"monthly",autopay:false,dueDay:22,active:true},
-    {id:22,name:"Netflix",type:"Subscription",bank:"Capital One",baseAmount:5,frequency:"monthly",autopay:true,dueDay:12,active:true},
-    {id:23,name:"Target",type:"CC",bank:"Schools First",baseAmount:120,frequency:"monthly",autopay:false,dueDay:16,active:true},
-    {id:24,name:"Discover it (8307)",type:"CC",bank:"Discover",baseAmount:100,frequency:"monthly",autopay:true,dueDay:21,active:true},
-    {id:25,name:"Walmart",type:"CC",bank:"Capital One",baseAmount:0,frequency:"monthly",autopay:false,dueDay:null,active:false},
-    {id:26,name:"Google Drive",type:"Subscription",bank:"Amex",baseAmount:10,frequency:"monthly",autopay:true,dueDay:3,active:true},
-    {id:27,name:"T-Mobile (Venture)",type:"Bills",bank:"Schools First",baseAmount:213,frequency:"monthly",autopay:true,dueDay:20,active:true},
-    {id:28,name:"AT&T",type:"Bills",bank:"Schools First",baseAmount:66,frequency:"monthly",autopay:true,dueDay:24,active:true},
-    {id:29,name:"Paypal",type:"CC",bank:"Schools First",baseAmount:100,frequency:"monthly",autopay:false,dueDay:17,active:true},
-    {id:30,name:"Hulu",type:"Subscription",bank:"Amex",baseAmount:3,frequency:"monthly",autopay:true,dueDay:9,active:false},
-    {id:31,name:"Electricity",type:"Bills",bank:"Schools First",baseAmount:220,frequency:"monthly",autopay:true,dueDay:14,active:true},
-    {id:32,name:"Rapid Express Car Wash",type:"Subscription",bank:"Capital One X",baseAmount:34,frequency:"monthly",autopay:true,dueDay:2,active:true},
-    {id:33,name:"SoCalGas",type:"Bills",bank:"Schools First",baseAmount:30,frequency:"monthly",autopay:true,dueDay:19,active:true},
-    {id:34,name:"Apple One Premier",type:"Subscription",bank:"Apple",baseAmount:38,frequency:"monthly",autopay:true,dueDay:11,active:true},
-    {id:35,name:"iPhones Payment",type:"Bills",bank:"Apple",baseAmount:0,frequency:"monthly",autopay:true,dueDay:1,active:true},
-    {id:36,name:"AAA",type:"Subscription",bank:"Amex",baseAmount:139,frequency:"yearly",autopay:true,dueDay:null,active:false},
-    {id:37,name:"Figma",type:"Subscription",bank:"Capital One",baseAmount:144,frequency:"yearly",autopay:true,dueDay:null,active:false},
-    {id:38,name:"Amazon Prime",type:"Subscription",bank:"Chase",baseAmount:139,frequency:"yearly",autopay:true,dueDay:null,active:true},
-    {id:39,name:"Tesla Premium",type:"Subscription",bank:"Amex",baseAmount:99,frequency:"yearly",autopay:true,dueDay:null,active:false}
+    // ── Bi-weekly (baseAmount = CSV amount × 2; per-check = baseAmount/2) ──
+    {id:1, name:"MY Car Payment",        type:"Loan",         bank:"Schools First", baseAmount:972,  frequency:"bi-weekly", autopay:true,  dueDay:null, active:true,  pinned:true},
+    {id:2, name:"Apple Wallet",          type:"CC",           bank:"Apple",         baseAmount:800,  frequency:"bi-weekly", autopay:false, dueDay:null, active:true,  pinned:true},
+    {id:3, name:"SoFi Loan 21k",         type:"Loan",         bank:"Schools First", baseAmount:500,  frequency:"bi-weekly", autopay:true,  dueDay:null, active:true,  pinned:true},
+    {id:4, name:"Vanguard",              type:"Investment",   bank:"Schools First", baseAmount:100,  frequency:"bi-weekly", autopay:true,  dueDay:null, active:true,  pinned:true},
+    {id:5, name:"Mortgage",              type:"Loan",         bank:"Chase",         baseAmount:3300, frequency:"bi-weekly", autopay:false, dueDay:null, active:true,  pinned:true},
+    {id:6, name:"Haircut",               type:"Bills",        bank:"Schools First", baseAmount:30,   frequency:"bi-weekly", autopay:false, dueDay:null, active:true,  pinned:true},
+    {id:7, name:"Baby Sitting",          type:"Bills",        bank:"Schools First", baseAmount:0,    frequency:"bi-weekly", autopay:false, dueDay:null, active:true,  pinned:true},
+    {id:8, name:"Robinhood",             type:"Investment",   bank:"Schools First", baseAmount:100,  frequency:"bi-weekly", autopay:true,  dueDay:null, active:true,  pinned:true},
+    {id:9, name:"M1",                    type:"Bills",        bank:"M1",            baseAmount:0,    frequency:"bi-weekly", autopay:false, dueDay:null, active:false, pinned:false},
+    // ── Monthly (baseAmount = full monthly amount; No. = dueDay) ──────────
+    {id:10, name:"Sam's Club",           type:"CC",           bank:"Schools First", baseAmount:150,  frequency:"monthly",   autopay:false, dueDay:null, active:true,  pinned:true},
+    {id:11, name:"Amazon (Chase)",       type:"CC",           bank:"Chase",         baseAmount:100,  frequency:"monthly",   autopay:false, dueDay:null, active:true,  pinned:true},
+    {id:12, name:"Capital One X (9806)", type:"CC",           bank:"Capital One X", baseAmount:350,  frequency:"monthly",   autopay:true,  dueDay:null, active:true,  pinned:true},
+    {id:13, name:"Tesla Insurance M3",   type:"Bills",        bank:"Apple",         baseAmount:159,  frequency:"monthly",   autopay:true,  dueDay:1,    active:false},
+    {id:14, name:"Scenbird",             type:"Subscription", bank:"Apple",         baseAmount:29,   frequency:"monthly",   autopay:true,  dueDay:1,    active:false},
+    {id:15, name:"SFCU CC/Overdraft",    type:"CC",           bank:"Schools First", baseAmount:0,    frequency:"monthly",   autopay:false, dueDay:2,    active:true},
+    {id:16, name:"SCF 02 Loan 15k",      type:"Loan",         bank:"Schools First", baseAmount:380,  frequency:"monthly",   autopay:true,  dueDay:3,    active:true},
+    {id:17, name:"M3 Car Payment",       type:"Loan",         bank:"Schools First", baseAmount:350,  frequency:"monthly",   autopay:false, dueDay:3,    active:true},
+    {id:18, name:"Tesla Insurance MY",   type:"Bills",        bank:"Apple",         baseAmount:295,  frequency:"monthly",   autopay:true,  dueDay:4,    active:true},
+    {id:19, name:"School Loan",          type:"Loan",         bank:"Schools First", baseAmount:100,  frequency:"monthly",   autopay:true,  dueDay:4,    active:true},
+    {id:20, name:"SCF 04 Loan 10k",      type:"Loan",         bank:"Schools First", baseAmount:225,  frequency:"monthly",   autopay:true,  dueDay:5,    active:false},
+    {id:21, name:"Capital One (9826)",   type:"CC",           bank:"Capital One",   baseAmount:50,   frequency:"monthly",   autopay:true,  dueDay:6,    active:true},
+    {id:22, name:"UFC Monthly Fee",      type:"Subscription", bank:"Amex",          baseAmount:19,   frequency:"monthly",   autopay:true,  dueDay:6,    active:true},
+    {id:23, name:"Jefe's Loan",          type:"Loan",         bank:"Schools First", baseAmount:300,  frequency:"monthly",   autopay:false, dueDay:6,    active:true},
+    {id:24, name:"Discovery",            type:"Subscription", bank:"Chase",         baseAmount:0,    frequency:"monthly",   autopay:true,  dueDay:7,    active:false},
+    {id:25, name:"Amex (Wife's)",        type:"CC",           bank:"Amex",          baseAmount:120,  frequency:"monthly",   autopay:false, dueDay:8,    active:true},
+    {id:26, name:"Capital One (2731)",   type:"CC",           bank:"Capital One",   baseAmount:50,   frequency:"monthly",   autopay:false, dueDay:10,   active:true},
+    {id:27, name:"Water Bill",           type:"Bills",        bank:"Schools First", baseAmount:30,   frequency:"monthly",   autopay:true,  dueDay:10,   active:true},
+    {id:28, name:"Spotify",              type:"Subscription", bank:"PayPal",        baseAmount:16,   frequency:"monthly",   autopay:true,  dueDay:11,   active:false},
+    {id:29, name:"Netflix",              type:"Subscription", bank:"Capital One",   baseAmount:5,    frequency:"monthly",   autopay:true,  dueDay:11,   active:true},
+    {id:30, name:"TJ Max",               type:"CC",           bank:"Schools First", baseAmount:50,   frequency:"monthly",   autopay:false, dueDay:13,   active:false},
+    {id:31, name:"Discover (6275)",      type:"CC",           bank:"Schools First", baseAmount:200,  frequency:"monthly",   autopay:true,  dueDay:13,   active:false},
+    {id:32, name:"Target",               type:"CC",           bank:"Schools First", baseAmount:200,  frequency:"monthly",   autopay:false, dueDay:13,   active:true},
+    {id:33, name:"Walmart",              type:"CC",           bank:"Capital One",   baseAmount:0,    frequency:"monthly",   autopay:false, dueDay:16,   active:true},
+    {id:34, name:"Wayfair",              type:"Loan",         bank:"Schools First", baseAmount:50,   frequency:"monthly",   autopay:false, dueDay:16,   active:true},
+    {id:35, name:"Google Drive",         type:"Subscription", bank:"Amex",          baseAmount:10,   frequency:"monthly",   autopay:true,  dueDay:16,   active:true},
+    {id:36, name:"T-Mobile (Venture)",   type:"Bills",        bank:"Schools First", baseAmount:213,  frequency:"monthly",   autopay:true,  dueDay:17,   active:true},
+    {id:37, name:"AT&T",                 type:"Bills",        bank:"Schools First", baseAmount:66,   frequency:"monthly",   autopay:true,  dueDay:18,   active:true},
+    {id:38, name:"Best Buy",             type:"CC",           bank:"Schools First", baseAmount:50,   frequency:"monthly",   autopay:true,  dueDay:18,   active:false},
+    {id:39, name:"Citi 1863 Diamond",    type:"CC",           bank:"Schools First", baseAmount:200,  frequency:"monthly",   autopay:false, dueDay:18,   active:false},
+    {id:40, name:"Amex (mine)",          type:"CC",           bank:"Amex",          baseAmount:0,    frequency:"monthly",   autopay:false, dueDay:19,   active:false},
+    {id:41, name:"Paypal",               type:"CC",           bank:"Schools First", baseAmount:100,  frequency:"monthly",   autopay:false, dueDay:20,   active:true},
+    {id:42, name:"Hulu",                 type:"Subscription", bank:"Amex",          baseAmount:3,    frequency:"monthly",   autopay:true,  dueDay:21,   active:true},
+    {id:43, name:"Electricity",          type:"Bills",        bank:"Schools First", baseAmount:172,  frequency:"monthly",   autopay:true,  dueDay:23,   active:true},
+    {id:44, name:"Rapid Express Car Wash",type:"Subscription",bank:"Capital One X", baseAmount:34,   frequency:"monthly",   autopay:true,  dueDay:25,   active:true},
+    {id:45, name:"SoCalGas",             type:"Bills",        bank:"Schools First", baseAmount:30,   frequency:"monthly",   autopay:true,  dueDay:26,   active:true},
+    {id:46, name:"Apple iCloud",         type:"Subscription", bank:"Apple",         baseAmount:35,   frequency:"monthly",   autopay:true,  dueDay:27,   active:false},
+    {id:47, name:"Apple One Premier",    type:"Subscription", bank:"Apple",         baseAmount:38,   frequency:"monthly",   autopay:true,  dueDay:28,   active:true},
+    {id:48, name:"iPhones Payment",      type:"Bills",        bank:"Apple",         baseAmount:0,    frequency:"monthly",   autopay:true,  dueDay:30,   active:true},
+    {id:49, name:"Diagram",              type:"Subscription", bank:"Amex",          baseAmount:9,    frequency:"monthly",   autopay:true,  dueDay:31,   active:false},
+    // ── Yearly (all deactivated per rule 3) ───────────────────────────────
+    {id:50, name:"UFC Yearly Fee",       type:"Subscription", bank:"Amex",          baseAmount:59,   frequency:"yearly",    autopay:true,  dueDay:1,    active:false},
+    {id:51, name:"AAA",                  type:"Subscription", bank:"Amex",          baseAmount:139,  frequency:"yearly",    autopay:true,  dueDay:14,   active:false},
+    {id:52, name:"Figma",                type:"Subscription", bank:"Capital One",   baseAmount:144,  frequency:"yearly",    autopay:true,  dueDay:19,   active:false},
+    {id:53, name:"Amazon Prime",         type:"Subscription", bank:"Chase",         baseAmount:139,  frequency:"yearly",    autopay:true,  dueDay:23,   active:false},
+    {id:54, name:"Tesla Premium",        type:"Subscription", bank:"Amex",          baseAmount:99,   frequency:"yearly",    autopay:true,  dueDay:31,   active:false},
   ];
 
   /* ── Constants ─────────────────────────────────────────────── */
@@ -171,7 +192,10 @@ button { font-family: inherit; }
   const SWIPE_THRESHOLD = 110;
 
   /* ── Helpers ───────────────────────────────────────────────── */
-  function bwAmt(b){ if(b.frequency==="bi-weekly") return Number(b.baseAmount)||0; if(b.frequency==="monthly") return (Number(b.baseAmount)||0)/2; return (Number(b.baseAmount)||0)/26; }
+  function bwAmt(b){ if(b.frequency==="bi-weekly") return (Number(b.baseAmount)||0)/2; if(b.frequency==="monthly") return (Number(b.baseAmount)||0)/2; return (Number(b.baseAmount)||0)/26; }
+  // manualActive: null=auto, true=force-show, false=force-hide
+  // auto: show if no due day (bi-weekly) or due date falls in current range
+  function isEffectivelyActive(b){ if(b.manualActive===false) return false; if(b.manualActive===true) return true; return !b.dueDay||!!b.inRange; }
   function toDS(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
   function addD(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
   function shiftDateString(s,days){ return toDS(addD(new Date(s+"T00:00:00"),days)); }
@@ -221,8 +245,8 @@ button { font-family: inherit; }
 
     // Copy bills from last check (reset paid/pinned), or use INITIAL_BILLS
     const bills = last
-      ? last.bills.map(b => Object.assign({}, b, { paid: false, pinned: false }))
-      : INITIAL_BILLS.map(b => Object.assign({}, b, { planned: Math.round(bwAmt(b)*100)/100, pinned: false, paid: false }));
+      ? last.bills.map(b => Object.assign({}, b, { paid: false, manualActive: b.manualActive===false?false:null }))
+      : INITIAL_BILLS.map(b => Object.assign({}, b, { planned: Math.round(bwAmt(b)*100)/100, paid: false, manualActive: b.active===false?false:null }));
 
     // Advance dates: start day after last check ends, span 14 days
     const sd = last ? shiftDateString(last.ed, 1) : toDS(today);
@@ -274,6 +298,19 @@ button { font-family: inherit; }
     } catch(e) { console.warn('Load failed', e); }
     // First run — create a default check
     if (app.checks.length === 0) app.checks = [makeCheck()];
+    // Migration: apply default pins by name (IDs may differ in old saved data)
+    const defaultPinnedNames = new Set(INITIAL_BILLS.filter(b=>b.pinned).map(b=>b.name.toLowerCase().trim()));
+    // Migration: convert active field to manualActive
+    app.checks.forEach(chk => {
+      chk.bills.forEach(b => {
+        if (defaultPinnedNames.has((b.name||'').toLowerCase().trim())) b.pinned = true;
+        // If bill was explicitly inactive and hasn't been migrated yet, force-hide it
+        if (b.manualActive === undefined) {
+          b.manualActive = b.active === false ? false : null;
+        }
+      });
+    });
+    saveApp();
   }
 
   /* ── State bridge (detail view reads/writes `state`) ──────── */
@@ -305,6 +342,84 @@ button { font-family: inherit; }
     ui.paidFilter = state.paidFilter; ui.editingIncome = state.editingIncome;
     ui.editingBill = state.editingBill; ui.confirmingDelete = state.confirmingDelete;
     saveApp();
+  }
+
+  /* ── Celebration ───────────────────────────────────────────── */
+  let celebrationShown = false;
+  function triggerCelebration() {
+    if (document.getElementById('celebration-overlay')) return;
+    const overlay = document.createElement('div');
+    overlay.id = 'celebration-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden;';
+    const colors = ['#f97316','#10b981','#3b82f6','#8b5cf6','#ec4899','#fbbf24','#fff'];
+    for (let i = 0; i < 80; i++) {
+      const p = document.createElement('div');
+      const c = colors[Math.floor(Math.random()*colors.length)];
+      const x = Math.random()*100, delay = Math.random()*0.8, dur = 1.4+Math.random()*1.2, size = 5+Math.random()*9;
+      p.style.cssText = `position:absolute;left:${x}%;top:-16px;width:${size}px;height:${size}px;background:${c};border-radius:${Math.random()>.5?'50%':'2px'};animation:confetti-fall ${dur}s ${delay}s ease-in forwards;`;
+      overlay.appendChild(p);
+    }
+    const banner = document.createElement('div');
+    banner.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#10b981;color:#0d0d0d;padding:18px 36px;border-radius:10px;font-family:DM Mono,monospace;font-size:17px;font-weight:700;letter-spacing:.12em;white-space:nowrap;animation:banner-pop .45s cubic-bezier(.34,1.56,.64,1) forwards;box-shadow:0 8px 40px rgba(16,185,129,.5);';
+    banner.textContent = '✓ ALL BILLS PAID!';
+    overlay.appendChild(banner);
+    document.body.appendChild(overlay);
+    setTimeout(()=>{ banner.style.animation='banner-fade .4s ease forwards'; setTimeout(()=>overlay.remove(),400); }, 2800);
+  }
+
+  /* ── Drag-to-reorder ───────────────────────────────────────── */
+  let dragState = null;
+
+  function startBillDrag(e, id, handle) {
+    e.stopPropagation(); e.preventDefault();
+    const row = handle.closest('[data-row="1"]');
+    const list = row.closest('[data-active-list]');
+    if (!list) return;
+    const rect = row.getBoundingClientRect();
+    const content = row.querySelector('[data-content="1"]');
+    const ghost = content.cloneNode(true);
+    ghost.style.cssText = `position:fixed;left:${rect.left+4}px;top:${rect.top}px;width:${rect.width-8}px;pointer-events:none;z-index:500;border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,.7);opacity:.96;transform:scale(1.02);transition:none;`;
+    document.body.appendChild(ghost);
+    row.style.opacity = '0.2';
+    dragState = { id, ghost, row, list, offsetY: e.clientY - rect.top, insertBeforeId: null };
+    try { handle.setPointerCapture(e.pointerId); } catch(_) {}
+  }
+
+  function moveBillDrag(e) {
+    if (!dragState) return;
+    dragState.ghost.style.top = (e.clientY - dragState.offsetY) + 'px';
+    const rows = Array.from(dragState.list.querySelectorAll('[data-row="1"]'));
+    let insertBeforeId = null;
+    for (const r of rows) {
+      const rid = Number(r.dataset.billId);
+      if (rid === dragState.id) continue;
+      const rc = r.getBoundingClientRect();
+      if (e.clientY < rc.top + rc.height / 2) { insertBeforeId = rid; break; }
+    }
+    // Update drop indicators
+    rows.forEach(r => { const ind = r.querySelector('[data-drop-line]'); if (ind) ind.style.opacity = '0'; });
+    if (insertBeforeId !== null) {
+      const tr = dragState.list.querySelector(`[data-row="1"][data-bill-id="${insertBeforeId}"]`);
+      const ind = tr?.querySelector('[data-drop-line]');
+      if (ind) ind.style.opacity = '1';
+    }
+    dragState.insertBeforeId = insertBeforeId;
+  }
+
+  function endBillDrag() {
+    if (!dragState) return;
+    const { id, ghost, row, list, insertBeforeId } = dragState;
+    ghost.remove(); row.style.opacity = '';
+    // Clear all drop indicators
+    list.querySelectorAll('[data-drop-line]').forEach(el => el.style.opacity = '0');
+    // Build new order
+    const rows = Array.from(list.querySelectorAll('[data-row="1"]'));
+    const ids = rows.map(r => Number(r.dataset.billId)).filter(rid => rid !== id);
+    if (insertBeforeId === null) ids.push(id);
+    else { const idx = ids.indexOf(insertBeforeId); ids.splice(idx >= 0 ? idx : ids.length, 0, id); }
+    state.order = ids;
+    dragState = null;
+    render();
   }
 
   /* ── Navigation ────────────────────────────────────────────── */
@@ -355,21 +470,88 @@ button { font-family: inherit; }
     renderHome();
   }
 
+  /* ── Data export / import ──────────────────────────────────── */
+  function exportData(){
+    const raw = localStorage.getItem(APP_KEY);
+    if(!raw){ showToast('No data to export','#ef4444'); return; }
+    navigator.clipboard.writeText(raw).then(()=>{
+      showToast('✓ Data copied — paste into the other device','#10b981');
+    }).catch(()=>{
+      // Fallback: show in textarea
+      showDataModal(raw, false);
+    });
+  }
+
+  function showDataModal(prefill='', isImport=true){
+    const overlay=document.createElement('div');
+    overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:200;display:flex;align-items:center;justify-content:center;padding:24px;';
+    overlay.innerHTML=`
+      <div style="background:#111;border:1px solid #2a2a2a;border-radius:8px;padding:18px;width:100%;max-width:480px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div style="font-size:11px;letter-spacing:.12em;color:#e8e0d5;font-weight:500;">${isImport?'IMPORT DATA':'EXPORT DATA'}</div>
+          <button id="data-modal-close" style="background:transparent;border:none;color:#555;cursor:pointer;font-size:16px;padding:2px 6px;">✕</button>
+        </div>
+        <div style="font-size:10px;color:#7b7b7b;margin-bottom:10px;line-height:1.5;">
+          ${isImport
+            ? 'Paste your exported JSON below. <b style="color:#ef4444">This will overwrite all current data.</b>'
+            : 'Copy this JSON and paste it into the other device using Import Data.'}
+        </div>
+        <textarea id="data-modal-text" style="width:100%;height:160px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:4px;color:#e8e0d5;font-family:DM Mono,monospace;font-size:11px;padding:10px;outline:none;resize:none;">${escHtml(prefill)}</textarea>
+        <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end;">
+          <button id="data-modal-close2" style="background:transparent;border:1px solid #2a2a2a;color:#888;padding:6px 14px;border-radius:4px;font-size:11px;font-family:DM Mono,monospace;cursor:pointer;">Cancel</button>
+          ${isImport?`<button id="data-modal-apply" style="background:#f97316;border:none;color:#0d0d0d;padding:6px 16px;border-radius:4px;font-size:11px;font-family:DM Mono,monospace;cursor:pointer;font-weight:700;">Apply & Reload</button>`:''}
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    const close=()=>overlay.remove();
+    overlay.querySelector('#data-modal-close').onclick=close;
+    overlay.querySelector('#data-modal-close2').onclick=close;
+    overlay.onclick=e=>{ if(e.target===overlay) close(); };
+    if(isImport){
+      overlay.querySelector('#data-modal-apply').onclick=()=>{
+        const val=overlay.querySelector('#data-modal-text').value.trim();
+        try {
+          const parsed=JSON.parse(val);
+          if(!parsed.checks) throw new Error('Invalid format');
+          localStorage.setItem(APP_KEY, val);
+          overlay.remove();
+          showToast('✓ Data imported — reloading…','#10b981');
+          setTimeout(()=>{ app={checks:[],currentCheckId:null}; loadApp(); renderApp(); },800);
+        } catch(e){
+          showToast('✗ Invalid data — check your JSON','#ef4444');
+        }
+      };
+    } else {
+      // Auto-select for easy copying
+      setTimeout(()=>{ const ta=overlay.querySelector('#data-modal-text'); ta.focus(); ta.select(); },100);
+    }
+  }
+
+  function showToast(msg, bg='#10b981'){
+    const t=document.createElement('div');
+    t.textContent=msg;
+    t.style.cssText=`position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:${bg};color:${bg==='#10b981'?'#0d0d0d':'#0d0d0d'};padding:10px 18px;border-radius:6px;font-size:12px;font-family:DM Mono,monospace;font-weight:600;z-index:9999;white-space:nowrap;`;
+    document.body.appendChild(t); setTimeout(()=>t.remove(),3500);
+  }
+
   /* ── Home screen ───────────────────────────────────────────── */
   function checkSummary(chk) {
     const totalIncome = (chk.incomeSources||[]).reduce((s,src)=>s+(Number(src.amount)||0),0);
-    const active = chk.bills.filter(b=>b.active);
+    // For home screen summary, count bills not explicitly force-hidden
+    const active = chk.bills.filter(b=>b.manualActive!==false);
     const totalAllocated = active.reduce((s,b)=>s+Number(b.planned||0),0);
     const remaining = totalIncome - totalAllocated;
     const paidCount = active.filter(b=>b.paid).length;
-    return { totalIncome, totalAllocated, remaining, paidCount, activeCount: active.length };
+    const allPaid = active.length > 0 && paidCount === active.length;
+    return { totalIncome, totalAllocated, remaining, paidCount, activeCount: active.length, allPaid };
   }
 
   function renderHome() {
     const root = document.getElementById('root');
 
     const cards = app.checks.map(chk => {
-      const { totalIncome, totalAllocated, remaining, paidCount, activeCount } = checkSummary(chk);
+      const { totalIncome, totalAllocated, remaining, paidCount, activeCount, allPaid } = checkSummary(chk);
       const isOver = remaining < 0;
       const isDeleting = ui.deletingCheckId === chk.id;
       const pct = totalIncome > 0 ? Math.min(100, (totalAllocated / totalIncome) * 100) : 0;
@@ -385,12 +567,16 @@ button { font-family: inherit; }
               </div>
             </div>
           ` : ''}
-          <div data-act="open-check" data-check-id="${chk.id}" class="check-card" style="opacity:${isDeleting?0.15:1};">
+          <div data-act="open-check" data-check-id="${chk.id}" class="check-card" style="opacity:${isDeleting?0.15:1};${allPaid?'border-color:#10b98155;background:#0d1a13;':''}">
+            ${allPaid?`<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#10b981,#10b98100);border-radius:8px 8px 0 0;"></div>`:''}
             <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
               <div>
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
                   <div class="syne" style="font-size:16px;color:#fff;">Check #${chk.checkN}</div>
-                  ${paidCount>0 ? `<span style="font-size:9px;background:#10b98118;color:#10b981;border:1px solid #10b98133;padding:1px 8px;border-radius:99px;letter-spacing:.05em;">${paidCount} paid</span>` : ''}
+                  ${allPaid
+                    ? `<span style="font-size:9px;background:#10b981;color:#0d0d0d;padding:2px 9px;border-radius:99px;letter-spacing:.05em;font-weight:700;">✓ ALL PAID</span>`
+                    : paidCount>0 ? `<span style="font-size:9px;background:#10b98118;color:#10b981;border:1px solid #10b98133;padding:1px 8px;border-radius:99px;letter-spacing:.05em;">${paidCount} / ${activeCount} paid</span>` : ''
+                  }
                 </div>
                 <div style="font-size:11px;color:#f97316;letter-spacing:.02em;">${fmtD(chk.sd)} → ${fmtD(chk.ed)}</div>
               </div>
@@ -433,7 +619,15 @@ button { font-family: inherit; }
             <div class="syne" style="font-size:19px;color:#fff;">PAYCHECKS</div>
             <div style="font-size:10px;color:#7b7b7b;letter-spacing:.1em;">${app.checks.length} CHECK${app.checks.length!==1?'S':''} · BIWEEKLY PLANNER</div>
           </div>
-          <button data-act="add-check" style="background:#10b98114;border:1px solid #10b98155;color:#10b981;padding:8px 14px;border-radius:4px;font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;letter-spacing:.05em;font-weight:500;">+ NEW CHECK</button>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <button data-act="import-data" title="Import data" style="background:transparent;border:1px solid #2a2a2a;color:#7b7b7b;width:30px;height:30px;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M2 11h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button data-act="export-data" title="Export data" style="background:transparent;border:1px solid #2a2a2a;color:#7b7b7b;width:30px;height:30px;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 9V1M4 4l3-3 3 3M2 11h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button data-act="add-check" style="background:#10b98114;border:1px solid #10b98155;color:#10b981;padding:8px 14px;border-radius:4px;font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;letter-spacing:.05em;font-weight:500;">+ NEW CHECK</button>
+          </div>
         </div>
         <div style="padding:14px 16px;max-width:700px;margin:0 auto;">
           ${app.checks.length===0
@@ -451,6 +645,8 @@ button { font-family: inherit; }
       const act = el.dataset.act;
       const checkId = el.dataset.checkId;
       if (act === 'add-check') el.onclick = () => addCheck();
+      else if (act === 'export-data') el.onclick = () => exportData();
+      else if (act === 'import-data') el.onclick = () => showDataModal('', true);
       else if (act === 'open-check') el.onclick = e => {
         if (e.target.closest('[data-act="delete-check"]')) return;
         navigateTo(checkId);
@@ -519,26 +715,33 @@ button { font-family: inherit; }
     const bw=bwAmt(b), diff=Number(b.planned)-bw;
     const due=b.nextDue?`${b.nextDue.getMonth()+1}/${b.nextDue.getDate()}`:(b.dueDay?`~${b.dueDay}`:"—");
     const open=state.expandedIds.has(b.id), tc=TC[b.type]||'#555';
-    const bdColor=b.active?'#ef4444':'#10b981', bdLabel=b.active?'→ DEACTIVATE':'→ ACTIVATE';
+    const effActive=isEffectivelyActive(b);
+    const bdColor=effActive?'#ef4444':'#10b981', bdLabel=effActive?'→ DEACTIVATE':'→ ACTIVATE';
     const border=b.paid?'1px solid #10b98140':b.pinned?'1px solid #f9731630':'1px solid #1e1e1e';
     return `
-      <div data-row="1" data-bill-id="${b.id}" style="position:relative;border-radius:6px;margin-bottom:4px;overflow:hidden;">
+      <div data-drop-line style="height:2px;background:#f97316;border-radius:1px;margin-bottom:2px;opacity:0;transition:opacity .1s;pointer-events:none;"></div>
+      <div data-row="1" data-bill-id="${b.id}" data-eff-active="${effActive?'1':'0'}" style="position:relative;border-radius:6px;margin-bottom:4px;overflow:hidden;">
         <div data-backdrop="1" style="position:absolute;inset:0;display:flex;align-items:center;padding:0 18px;background:${bdColor}1a;color:${bdColor};font-size:10px;letter-spacing:.18em;font-weight:500;opacity:0;pointer-events:none;border:1px solid ${bdColor}44;border-radius:6px;">${bdLabel}</div>
         <div data-backdrop-left="1" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;padding:0 18px;background:#10b98118;color:#10b981;font-size:10px;letter-spacing:.18em;font-weight:500;opacity:0;pointer-events:none;border:1px solid #10b98144;border-radius:6px;">${b.paid?'✕ UNPAID':'✓ PAID'}</div>
-        <div data-content="1" style="position:relative;border:${border};border-radius:6px;background:${b.active?'#111':'#0d0d0d'};opacity:${b.active?1:0.6};overflow:hidden;touch-action:pan-y;will-change:transform;">
+        <div data-content="1" style="position:relative;border:${border};border-radius:6px;background:${effActive?'#111':'#0d0d0d'};opacity:${effActive?1:0.55};overflow:hidden;touch-action:pan-y;will-change:transform;">
           ${b.paid?`<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#10b981,#10b98100);border-radius:6px 6px 0 0;pointer-events:none;"></div>`:''}
           <div data-act="expand-row" data-bill-id="${b.id}" style="display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;user-select:none;">
+            <div data-drag-handle data-bill-id="${b.id}" style="display:flex;flex-direction:column;gap:3px;padding:4px 2px;cursor:grab;flex-shrink:0;touch-action:none;" title="Drag to reorder">
+              <div style="width:14px;height:1.5px;background:#333;border-radius:1px;"></div>
+              <div style="width:14px;height:1.5px;background:#333;border-radius:1px;"></div>
+              <div style="width:14px;height:1.5px;background:#333;border-radius:1px;"></div>
+            </div>
             <div style="width:3px;height:28px;border-radius:2px;background:${tc};flex-shrink:0;"></div>
             <div style="flex:1;min-width:0;">
               <div style="display:flex;align-items:center;gap:5px;">
                 ${b.pinned?`<span style="font-size:9px;color:#f97316;flex-shrink:0;">📌</span>`:''}
                 ${b.paid?`<span style="font-size:10px;color:#10b981;flex-shrink:0;">✓</span>`:''}
-                <div title="${escAttr(b.name)}" style="font-size:15px;color:${b.paid?'#10b98199':b.active?'#e0d8ce':'#666'};font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${b.paid?'text-decoration:line-through;text-decoration-color:#10b98166;':''}">${escHtml(b.name)}</div>
+                <div title="${escAttr(b.name)}" style="font-size:15px;color:${b.paid?'#10b98199':effActive?'#e0d8ce':'#666'};font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;${b.paid?'text-decoration:line-through;text-decoration-color:#10b98166;':''}">${escHtml(b.name)}</div>
               </div>
               <div style="font-size:11px;color:#7b7b7b;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(b.bank)}${b.autopay?' · AUTO':''}</div>
             </div>
             <div style="font-size:13px;font-family:'DM Mono',monospace;color:${b.active&&b.inRange?'#f97316':'#333'};white-space:nowrap;flex-shrink:0;min-width:36px;text-align:right;">${due}</div>
-            ${b.active?`
+            ${effActive?`
               <div data-stop="1" style="display:flex;align-items:center;gap:3px;flex-shrink:0;">
                 <span style="color:#7b7b7b;font-size:11px;">$</span>
                 <input type="number" min="0" data-act="planned" data-bill-id="${b.id}" data-focus-key="planned-${b.id}" value="${b.planned}" style="background:transparent;border:none;border-bottom:1px solid #2a2a2a;color:#e8e0d5;font-family:'DM Mono',monospace;font-size:16px;width:46px;text-align:right;padding:1px 0;outline:none;" />
@@ -569,7 +772,7 @@ button { font-family: inherit; }
       ['Due Day',b.dueDay?`Day ${b.dueDay}`:'Variable'],
       ['Full Amount',`$${(b.baseAmount||0).toLocaleString()}`],
       ['Biweekly Split',`$${bw.toFixed(2)}`],
-      ['Status',`<span style="color:${b.active?'#10b981':'#555'};">${b.active?'Active':'Inactive'}</span>`],
+      ['Status',`<span style="color:${isEffectivelyActive(b)?'#10b981':'#555'};">${isEffectivelyActive(b)?b.manualActive===true?'Active (manual)':'Active':'Inactive'}</span>`],
     ];
     return `<div style="border-top:1px solid #1a1a1a;padding:10px 14px 12px;background:#0d0d0d;display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;">
       ${items.map(([l,v])=>`<div><div style="font-size:9px;color:#7b7b7b;letter-spacing:.08em;margin-bottom:4px;">${l.toUpperCase()}</div><div style="font-size:11px;color:#aaa;">${v}</div></div>`).join('')}
@@ -579,7 +782,7 @@ button { font-family: inherit; }
         </button>
         <button data-act="toggle-pin" data-bill-id="${b.id}" style="background:${b.pinned?'#f9731618':'transparent'};border:1px solid ${b.pinned?'#f9731655':'#2a2a2a'};color:${b.pinned?'#f97316':'#7b7b7b'};padding:4px 12px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;">${b.pinned?'📌 Unpin':'📌 Pin'}</button>
         <div style="flex:1;"></div>
-        <button data-act="toggle-active" data-bill-id="${b.id}" style="background:transparent;border:1px solid ${b.active?'#ef444455':'#10b98155'};color:${b.active?'#ef4444':'#10b981'};padding:4px 12px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;">${b.active?'Deactivate':'Activate'}</button>
+        <button data-act="toggle-active" data-bill-id="${b.id}" data-eff-active="${isEffectivelyActive(b)?'1':'0'}" style="background:transparent;border:1px solid ${isEffectivelyActive(b)?'#ef444455':'#10b98155'};color:${isEffectivelyActive(b)?'#ef4444':'#10b981'};padding:4px 12px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;">${isEffectivelyActive(b)?'Deactivate':'Activate'}</button>
       </div>
     </div>`;
   }
@@ -681,6 +884,8 @@ button { font-family: inherit; }
 
   async function syncToObsidian(silent=false){
     if(!state) return;
+    // Obsidian sync only works inside Cowork — skip silently on GitHub Pages
+    if(typeof window.cowork === 'undefined' || typeof window.cowork.callMcpTool !== 'function') return;
     const md=buildMarkdown();
     const filename=`Check-${state.checkN}.md`;
     const folder='Personal Finance/Budget Tracker 2026';
@@ -751,18 +956,21 @@ button { font-family: inherit; }
       if(state.paidFilter==='unpaid'&&b.paid) return false;
       return b.name.toLowerCase().includes(state.search.toLowerCase());
     };
-    const activeBills=enriched.filter(b=>b.active&&matchesFilter(b)).sort((a,b)=>{
+    const activeBills=enriched.filter(b=>isEffectivelyActive(b)&&matchesFilter(b)).sort((a,b)=>{
       if(b.pinned!==a.pinned) return(b.pinned?1:0)-(a.pinned?1:0);
       const ai=state.order.indexOf(a.id), bi=state.order.indexOf(b.id);
       if(ai===-1&&bi===-1) return 0; if(ai===-1) return 1; if(bi===-1) return -1; return ai-bi;
     });
-    const inactiveBills=enriched.filter(b=>!b.active&&matchesFilter(b));
+    const inactiveBills=enriched.filter(b=>!isEffectivelyActive(b)&&matchesFilter(b));
+    const allPaid = activeBills.length > 0 && activeBills.every(b=>b.paid);
+    if (allPaid && !celebrationShown) { celebrationShown=true; setTimeout(triggerCelebration, 400); }
+    else if (!allPaid) { celebrationShown=false; }
     const totalActive=activeBills.reduce((s,b)=>s+Number(b.planned||0),0);
     const inRangeCount=activeBills.filter(b=>b.inRange).length;
     const totalInRange=activeBills.filter(b=>b.inRange).reduce((s,b)=>s+Number(b.planned||0),0);
     const remaining=state.income-totalActive, isOver=remaining<0, sc=isOver?"#ef4444":"#10b981";
     const byTypeMap={};
-    state.bills.filter(b=>b.active).forEach(b=>{ byTypeMap[b.type]=(byTypeMap[b.type]||0)+Number(b.planned||0); });
+    activeBills.forEach(b=>{ byTypeMap[b.type]=(byTypeMap[b.type]||0)+Number(b.planned||0); });
     const byType=Object.entries(byTypeMap).sort((a,b)=>b[1]-a[1]);
     const stats=[
       {l:"REMAINING",v:`$${Math.abs(remaining).toFixed(0)}`,s:isOver?"OVER":"available",c:sc},
@@ -785,19 +993,15 @@ button { font-family: inherit; }
             </div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;">
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
-              <div style="display:flex;gap:6px;">
-                <button data-act="sync-obsidian" title="Sync to Obsidian" style="background:#6366f114;border:1px solid #6366f155;color:#818cf8;width:30px;height:30px;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .2s;">
-                  <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2.5 7A4.5 4.5 0 0 1 11 4.5M11.5 7A4.5 4.5 0 0 1 3 9.5M11 4.5V2M11 4.5H8.5M3 9.5v2M3 9.5h2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-              </div>
-              <span data-sync-indicator style="font-size:8px;color:#555;letter-spacing:.04em;">not synced</span>
+            ${typeof window.cowork!=='undefined'&&typeof window.cowork.callMcpTool==='function'?`
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
+              <button data-act="sync-obsidian" title="Sync to Obsidian" style="background:#6366f118;border:1px solid #6366f155;color:#818cf8;padding:0 14px;height:32px;border-radius:4px;cursor:pointer;display:flex;align-items:center;gap:7px;font-size:10px;font-family:'DM Mono',monospace;letter-spacing:.1em;font-weight:500;transition:opacity .2s;white-space:nowrap;">
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2.5 7A4.5 4.5 0 0 1 11 4.5M11.5 7A4.5 4.5 0 0 1 3 9.5M11 4.5V2M11 4.5H8.5M3 9.5v2M3 9.5h2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                SYNC
+              </button>
+              <span data-sync-indicator style="font-size:8px;color:#555;letter-spacing:.04em;text-align:right;">not synced</span>
             </div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <button data-act="check-dec" ${state.checkN<=1?'disabled':''} style="background:#1a1a1a;border:1px solid #2a2a2a;color:${state.checkN<=1?'#333':'#888'};width:24px;height:24px;border-radius:4px;cursor:${state.checkN<=1?'not-allowed':'pointer'};font-size:14px;line-height:22px;text-align:center;">−</button>
-              <span class="syne" style="font-size:13px;color:#fff;min-width:22px;text-align:center;">#${state.checkN}</span>
-              <button data-act="check-inc" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#888;width:24px;height:24px;border-radius:4px;cursor:pointer;font-size:14px;line-height:22px;text-align:center;">+</button>
-            </div>
+            `:''}
           </div>
         </div>
         <div id="scroll-header" style="position:fixed;left:0;right:0;top:-80px;z-index:20;background:#0d0d0d;border-bottom:1px solid #2a2a2a;padding:7px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:top .15s ease;">
@@ -932,7 +1136,7 @@ button { font-family: inherit; }
       else if(act==='expand-row') el.onclick=e=>{ if(e.target&&e.target.closest&&e.target.closest('[data-stop="1"]')) return; state.expandedIds.has(id)?state.expandedIds.delete(id):state.expandedIds.add(id); render(); };
       else if(act==='toggle-paid') el.onclick=()=>{ const b=state.bills.find(b=>b.id===id); if(b){b.paid=!b.paid;render();} };
       else if(act==='toggle-autopay') el.onclick=e=>{ e.stopPropagation(); const b=state.bills.find(b=>b.id===id); if(b){b.autopay=!b.autopay;render();} };
-      else if(act==='toggle-active') el.onclick=e=>{ e.stopPropagation(); const b=state.bills.find(b=>b.id===id); if(b){b.active=!b.active;render();} };
+      else if(act==='toggle-active') el.onclick=e=>{ e.stopPropagation(); const b=state.bills.find(b=>b.id===id); if(b){ const wasActive=el.dataset.effActive==='1'; b.manualActive=wasActive?false:true; render(); } };
       else if(act==='toggle-pin') el.onclick=()=>{ const b=state.bills.find(b=>b.id===id); if(b){b.pinned=!b.pinned;render();} };
       else if(act==='new-bill') el.onclick=()=>startNewBill();
       else if(act==='edit-bill') el.onclick=()=>startEditBill(id);
@@ -954,6 +1158,13 @@ button { font-family: inherit; }
       else if(act==='ef-pinned') el.onchange=e=>updEditField('pinned',e.target.checked);
     });
     document.querySelectorAll('[data-stop="1"]').forEach(el=>{ el.onclick=e=>e.stopPropagation(); el.onmousedown=e=>e.stopPropagation(); el.onpointerdown=e=>e.stopPropagation(); });
+    document.querySelectorAll('[data-drag-handle]').forEach(handle=>{
+      const id=Number(handle.dataset.billId);
+      handle.onpointerdown=e=>startBillDrag(e,id,handle);
+      handle.onpointermove=e=>moveBillDrag(e);
+      handle.onpointerup=()=>endBillDrag();
+      handle.onpointercancel=()=>{ if(dragState){dragState.ghost.remove();dragState.row.style.opacity='';dragState=null;} };
+    });
     document.querySelectorAll('[data-stop-modal="1"]').forEach(el=>{ el.onclick=e=>e.stopPropagation(); el.onpointerdown=e=>e.stopPropagation(); });
 
     // Swipe gestures
@@ -969,7 +1180,7 @@ button { font-family: inherit; }
         else{ content.style.transform=`translateX(-${Math.max(0,-dx)}px)`; if(bdLeft){bdLeft.style.opacity=Math.min(1,-dx/SWIPE_THRESHOLD).toFixed(2);bdLeft.style.fontWeight=-dx>=SWIPE_THRESHOLD?'700':'500';} if(backdrop) backdrop.style.opacity='0'; }
       };
       const finish=e=>{ if(sX==null) return; const tr=locked==='h'&&dx>=SWIPE_THRESHOLD, tl=locked==='h'&&dx<=-SWIPE_THRESHOLD; sX=null;sY=null; if(didSwipe) suppressClickUntil=Date.now()+400; try{row.releasePointerCapture(e.pointerId);}catch(_){} content.style.transition='transform .25s ease'; if(backdrop) backdrop.style.transition='opacity .25s ease'; if(bdLeft) bdLeft.style.transition='opacity .25s ease';
-        if(tr){ content.style.transform='translateX(110%)'; if(backdrop) backdrop.style.opacity='1'; setTimeout(()=>{ const b=state.bills.find(b=>b.id===id); if(b){b.active=!b.active;render();} },230); }
+        if(tr){ content.style.transform='translateX(110%)'; if(backdrop) backdrop.style.opacity='1'; setTimeout(()=>{ const bill=state.bills.find(b=>b.id===id); if(bill){ const wasActive=row.dataset.effActive==='1'; bill.manualActive=wasActive?false:true; render(); } },230); }
         else if(tl){ content.style.transform='translateX(-110%)'; if(bdLeft) bdLeft.style.opacity='1'; setTimeout(()=>{ const b=state.bills.find(b=>b.id===id); if(b){b.paid=!b.paid;render();} },230); }
         else{ content.style.transform='translateX(0)'; if(backdrop) backdrop.style.opacity='0'; if(bdLeft) bdLeft.style.opacity='0'; }
       };
